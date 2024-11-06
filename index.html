@@ -1,45 +1,49 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Scanner de code-barres</title>
-  <script src="https://cdn.jsdelivr.net/npm/quagga2"></script>
-</head>
-<body>
-  <button id="startScan">Démarrer le scan</button>
-  <video id="video" style="display:none;"></video>
-  <input type="text" id="code" />
+  <head>
+    <title>Scanner de code-barres</title>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/quagga2"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+  </head>
+  <body>
+    <button id="startScan">Démarrer le scan</button>
+    <video id="video" style="display: none"></video>
+    <input type="text" id="code" />
 
-  <script>
-    const startButton = document.getElementById('startScan');
-    const video = document.getElementById('video');
-    const codeInput = document.getElementById('code');
+    <script>
+      const startButton = document.getElementById("startScan");
+      const video = document.getElementById("video");
+      const codeInput = document.getElementById("code");
 
-    startButton.addEventListener('click', () => {
-      Quagga.init({
-        inputStream: {
-          name: "Live",
-          type: "LiveStream",
-          target: video
-        },
-        decoder: {
-          readers: ["code_128"]
-        }
-      }, function(err) {
-        if (err) {
-          console.error(err);
-          return;
-        }
-        video.style.display = 'block';
-        Quagga.start();
+      startButton.addEventListener("click", () => {
+        Quagga.init(
+          {
+            inputStream: {
+              name: "Live",
+              type: "LiveStream",
+              target: video,
+            },
+            decoder: {
+              readers: ["code_128"],
+            },
+          },
+          function (err) {
+            if (err) {
+              console.error(err);
+              return;
+            }
+            video.style.display = "block";
+            Quagga.start();
+          }
+        );
+
+        Quagga.onDetected(function (result) {
+          var code = result.codeResult.code;
+          codeInput.value = code;
+          Quagga.stop();
+          video.style.display = "none";
+        });
       });
-
-      Quagga.onDetected(function(result) {
-        var code = result.codeResult.code;
-        codeInput.value = code;
-        Quagga.stop();
-        video.style.display = 'none';
-      });
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
