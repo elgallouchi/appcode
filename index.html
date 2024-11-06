@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Scanner de code-barres</title>
+    <script src="https://cdn.jsdelivr.net/npm/quagga2"></script>
+  </head>
+  <body>
+    <video id="video"></video>
+    <input type="text" id="code" />
+
+    <script>
+      Quagga.init(
+        {
+          inputStream: {
+            name: "Live",
+            type: "LiveStream",
+            target: document.querySelector("#video"),
+          },
+          decoder: {
+            readers: ["code_128"],
+          },
+        },
+        function (err) {
+          if (err) {
+            console.log(err);
+            return;
+          }
+          Quagga.start();
+        }
+      );
+
+      Quagga.onDetected(function (result) {
+        var code = result.codeResult.code;
+        document.getElementById("code").value = code;
+      });
+    </script>
+  </body>
+</html>
